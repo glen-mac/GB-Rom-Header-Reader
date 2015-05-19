@@ -38,6 +38,12 @@ Checksum:	0x91
 Glenn-Mac:Desktop Glenn-Mac$
 ```
 
+## To-Do ##
+
+Program only prints 1 byte of the checksum, need to alter ‘hexString’ method to do so.
+
+Add comments throughout code
+
 ## Copyright and License ##
 
 This is free software, licensed under the MIT license.
