@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * @Version 0.1
+ * @Version 0.15
  * Copyright 2015 Glenn McGuire <glennmcguire9@gmail.com> <https://github.com/glen-mac>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,19 +29,23 @@
 #include <string.h>
 #include "headerDef.h"
 
+/** an array of the desired headerdata from the ROM binary */
 byte headerData[28];
 
-byte numItems;
+/** function prototype */
 byte addrShift(int addr);
+/** function prototype */
 byte *subHead(int from, int to);
+/** function prototype */
 char *hexString(byte *hexArr);
-char *hex2Ascii(byte *hexAr);
+/** function prototype */
+char *hex2Ascii(byte *hexArr);
 
 int main(int argc, char *argv[]){
 
 	puts("*****************************************");
-	puts("*       C GB Rom Header Reader 0.1      *");
-	puts("*           Glenn McGuire 2015          *");
+	puts("*       C GB Rom Header Reader 0.15     *");
+	puts("*            Glenn McGuire 2015         *");
 	puts("*****************************************\n");
 
 	if (argc != 2)
@@ -59,27 +63,26 @@ int main(int argc, char *argv[]){
 		return(1);
 	}
 
-	fseek(fp, 308, SEEK_SET); 
-	fread(headerData, 1, 28, fp);
-	fclose(fp);
+	fseek(fp, 308, SEEK_SET); //shift 308 bytes into the binary to get to the header
+	fread(headerData, 1, 28, fp); //store 28 bytes of the header into our array
+	fclose(fp); //close the file
 
-	char *romName = hexString(subHead(0x134, 0x142));
-	//for(int i=addrShift(0x134); i<=addrShift(0x142); i++)
-		//romName[i] = headerData[i];
+	char *romName = hex2Ascii(subHead(0x134, 0x142));
 	bool colourGame = (headerData[addrShift(0x143)] == 0x80) ? true : false;
-	char *licenseCode = hex2Ascii(subHead(0x144, 0x145));
+	char *licenseCode = hexString(subHead(0x144, 0x145));
 	bool sgbFunc = (headerData[addrShift(0x146)] == 0x03) ? true : false;
 	char *catridgeType = getCatridgeType(headerData[addrShift(0x147)]);
 	char *romSize = getRomSize(headerData[addrShift(0x148)]);
 	char *ramSize = getRamSize(headerData[addrShift(0x149)]);
 	bool japDestination = (headerData[addrShift(0x14A)] == 0) ? true : false;
-	char *maskRom = hexString(&headerData[addrShift(0x14C)]);
-	char *complementCheck = hexString(&headerData[addrShift(0x14D)]);
+	char *maskRom = hexString(subHead(0x14C, 0x14C));
+	char *complementCheck = hexString(subHead(0x14D, 0x14D));
 	char *checkSum = hexString(subHead(0x14E, 0x14F));
 
+	printf("ROM File Name:\t%s\n", romFile);
 	printf("ROM Name:\t%s\n", romName);
 	printf("GBC Game?:\t%s\n", colourGame ? "true" : "false");
-	printf("License Code:\t%s\n", licenseCode);
+	printf("License Code:\t0x%s\n", licenseCode);
 	printf("SGB Game?:\t%s\n", sgbFunc ? "true" : "false");
 	printf("Catridge Type:\t%s\n", catridgeType);
 	printf("ROM Size:\t%s\n", romSize);
@@ -88,36 +91,67 @@ int main(int argc, char *argv[]){
 	printf("MaskRom Ver. #:\t0x%s\n", maskRom);
 	printf("Compl. Check:\t0x%s\n", complementCheck);
 	printf("Checksum:\t0x%s\n", checkSum);
-
-	free(licenseCode);
+	puts("");
 
 	return 0;
 }
 
+/** 
+* Returns the header data index which has been shifted to account for the
+* fact that we are using header data
+*
+* @param	addr	the hex ROM address we woud like to access
+* @return	the header array index
+*/
 byte addrShift(int addr){
 	return addr - 0x134;
 }
 
+/** 
+* Returns a pointer to a 'byte' sub array of the headerData array using bounds, 
+* assigning the first byte of the array to a hex representation of the number of 
+* hex bytes following
+*
+* @param	from	the starting indexing location
+* @param	to	the ending indexing location
+* @return	a byte pointer to a sub array of the headerData array
+*/
 byte *subHead(int from, int to){
-	numItems = (to-from+1);
-	byte *subArr = (byte *) malloc(numItems * sizeof(byte));
-	memcpy(subArr, &headerData[addrShift(from)], numItems * sizeof(byte));
+	byte numItems = (byte) (to-from+1);
+	byte *subArr = (byte *) malloc((numItems + 1) * sizeof(byte));
+	*subArr = numItems; //store number of bytes as the first byte in the array
+	memcpy(subArr + 1, &headerData[addrShift(from)], numItems * sizeof(byte));
 	return subArr;
 }
 
+/** 
+* Returns a string pointer containing a string of the decimal-ASCII
+* representation of a hex byte array
+*
+* @param	hex	an array of hex bytes with the first byte being the number
+			of hex bytes following
+* @return	a string pointer of an decimal-ASCII representation of 'hexArr'
+*/
 char *hex2Ascii(byte *hexArr){
-	char *hexStr = (char *) malloc(sizeof(*hexArr));
-	sprintf(hexStr, "%s", hexArr);
+	char *hexStr = (char *) malloc(*hexArr * sizeof(byte) + 1);
+	sprintf(hexStr, "%s", hexArr + 1);
 	return hexStr;
 }
 
-char *hexString(byte *hexAr){
-	char *hexStr = (char *) malloc(sizeof(*hexAr));
+/** 
+* Returns a string pointer containing a string of a hex byte array
+*
+* @param	hexArr	an array of hex bytes with the first byte being the number
+			of hex bytes following	
+* @return	a string pointer of an ASCII representation of 'hexArr'
+*/
+char *hexString(byte *hexArr){
+	char *hexStr = (char *) malloc(*hexArr);
 	int i = 0;
-	//do{
-	sprintf(hexStr + i, "%X", *(hexAr + i));
-		//i++;
-	//} while(i < numItems);
+	do{
+		sprintf(hexStr + 2*i, "%02X", *(hexArr + i + 1));
+		i++;
+	} while(i < *hexArr);
 	return hexStr;
 }
 

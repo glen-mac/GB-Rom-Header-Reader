@@ -26,16 +26,19 @@
 #include <string.h>
 #include "headerDef.h"
 
+/** an array of the catridgetypes */
 char *catridgeType[32] = {"ROM ONLY", "ROM+MBC1", "ROM+MBC1+RAM", "ROM+MBC1+RAM+BATT", NULL, "ROM+MBC2", "ROM+MBC2+BATTERY", NULL,
 "ROM+RAM","ROM+RAM+BATTERY", NULL,  "ROM+MMM01", "ROM+MMM01+SRAM", "ROM+MMM01+SRAM+BATT", NULL, 
 "ROM+MBC3+TIMER+BATT", "ROM+MBC3+TIMER+RAM+BATT", "ROM+MBC3", "ROM+MBC3+RAM", "ROM+MBC3+RAM+BATT", NULL, NULL, NULL, NULL, NULL,
 "ROM+MBC5", "ROM+MBC5+RAM", "ROM+MBC5+RAM+BATT", "ROM+MBC5+RUMBLE", "ROM+MBC5+RUMBLE+SRAM","ROM+MBC5+RUMBLE+SRAM+BATT",
 "Pocket Camera"};
 
+/** an array of the rom sizes */
 char *romSize[7] = {"256Kbit = 32KByte = 2 banks", "512Kbit = 64KByte = 4 banks", "1Mbit = 128KByte = 8 banks",
 "2Mbit = 256KByte = 16 banks", "4Mbit = 512KByte = 32 banks", "8Mbit = 1MByte = 64 banks",
 "16Mbit = 2MByte = 128 banks"};
 
+/** an array of the ram sizes */
 char *ramSize[5] = {"None", "16kBit = 2kB = 1 bank", "64kBit = 8kB = 1 bank", "256kBit = 32kB = 4 banks", "1MBit = 128kB = 16 banks"};
 
 // //define ROM sizes
@@ -85,13 +88,32 @@ char *ramSize[5] = {"None", "16kBit = 2kB = 1 bank", "64kBit = 8kB = 1 bank", "2
 // catridgeType[0xFE] = "Hudson HuC-3";
 // catridgeType[0xFF] = "Hudson HuC-1";
 
+/** 
+ * Returns the type from the catridgeType Map
+ *
+ * @param	indicator	the key(hex) to search
+ * @return	the cartridge type
+*/
 char *getCatridgeType(byte indicator){
 	return catridgeType[indicator];
 }
 
+/** 
+ * Returns the size from the romSize Map
+ *
+ * @param	indicator	the key(hex) to search
+ * @return	the ROM size
+*/
 char *getRomSize(byte indicator){
 	return romSize[indicator];
 }
+
+/** 
+ * Returns the size from the ramSize Map
+ *
+ * @param	indicator	the key(hex) to search
+ * @return	the RAM size
+*/
 char *getRamSize(byte indicator){
 	return ramSize[indicator];
 }

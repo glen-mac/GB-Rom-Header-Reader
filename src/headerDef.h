@@ -24,12 +24,13 @@
  */
 
 #ifndef HEADERDEF_H_
-#define HEADERDEF_H_
+ 
+	#define HEADERDEF_H_
 
-typedef unsigned char byte;
+	typedef unsigned char byte;
 
-char *getCatridgeType(byte indicator);
-char *getRomSize(byte indicator);
-char *getRamSize(byte indicator);
+	char *getCatridgeType(byte indicator);
+	char *getRomSize(byte indicator);
+	char *getRamSize(byte indicator);
 
 #endif
