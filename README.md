@@ -40,9 +40,7 @@ Glenn-Mac:Desktop Glenn-Mac$
 
 ## To-Do ##
 
-Program only prints 1 byte of the checksum, need to alter ‘hexString’ method to do so.
-
-Add comments throughout code
+Add proper HashMap implementation for the static lookup data (Catridgetype, ROMsize, RAMsize)
 
 ## Copyright and License ##
 
