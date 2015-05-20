@@ -133,7 +133,7 @@ byte *subHead(int from, int to){
 * @return	a string pointer of an decimal-ASCII representation of 'hexArr'
 */
 char *hex2Ascii(byte *hexArr){
-	char *hexStr = (char *) malloc(*hexArr * sizeof(byte) + 1);
+	char *hexStr = (char *) malloc(*hexArr * sizeof(byte));
 	sprintf(hexStr, "%s", hexArr + 1);
 	return hexStr;
 }
@@ -146,12 +146,11 @@ char *hex2Ascii(byte *hexArr){
 * @return	a string pointer of an ASCII representation of 'hexArr'
 */
 char *hexString(byte *hexArr){
-	char *hexStr = (char *) malloc(*hexArr);
+	char *hexStr = (char *) malloc(*hexArr * sizeof(byte));
 	int i = 0;
 	do{
 		sprintf(hexStr + 2*i, "%02X", *(hexArr + i + 1));
-		i++;
-	} while(i < *hexArr);
+	} while(++i < *hexArr);
 	return hexStr;
 }
 
