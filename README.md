@@ -10,7 +10,8 @@ You need a C compiler (e.g gcc)
 ## Usage ##
 
 ```
-./romData <romFile>
+Glenn-Mac:src Glenn-Mac$ gcc -Wall romData.c headerDef.c -o romData
+Glenn-Mac:src Glenn-Mac$ ./romData <romFile>
 ```
 
 ## Example Output ##
@@ -18,24 +19,26 @@ You need a C compiler (e.g gcc)
 This is an example output running the program on my legal Pokemon Red backup:
 
 ```
-Glenn-Mac:Desktop Glenn-Mac$ ./romData poke.gb
+Glenn-Mac:src Glenn-Mac$ ./romData poke.gb
 *****************************************
-*       C GB Rom Header Reader 0.1      *
-*           Glenn McGuire 2015          *
+*       C GB Rom Header Reader 0.15     *
+*            Glenn McGuire 2015         *
 *****************************************
 
-ROM Name:	50
+ROM File Name:	poke.gb
+ROM Name:	POKEMON RED
 GBC Game?:	false
-License Code:	01
+License Code:	0x3031
 SGB Game?:	true
 Catridge Type:	ROM+MBC3+RAM+BATT
 ROM Size:	8Mbit = 1MByte = 64 banks
 RAM Size:	256kBit = 32kB = 4 banks
 Japanese Game?:	false
-MaskRom Ver. #:	0x0
+MaskRom Ver. #:	0x00
 Compl. Check:	0x20
-Checksum:	0x91
-Glenn-Mac:Desktop Glenn-Mac$
+Checksum:	0x91E6
+
+Glenn-Mac:src Glenn-Mac$
 ```
 
 ## To-Do ##
